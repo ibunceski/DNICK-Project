@@ -4,7 +4,6 @@ import {Card, Button, Container, Row, Col, Form, Pagination, Collapse} from 'rea
 import PDFViewer from './PDFViewer.jsx';
 import AddResourceForm from './AddResourceForm.jsx';
 
-
 function ResourceList() {
     const [filteredResources, setFilteredResources] = useState([]);
     const [topics, setTopics] = useState([]);
@@ -55,7 +54,7 @@ function ResourceList() {
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [pageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(10); // Default page size
 
     const [editingResource, setEditingResource] = useState(null);
 
@@ -88,12 +87,14 @@ function ResourceList() {
             console.error('Error fetching resources:', error.response?.data || error.message);
             setError('Failed to fetch resources. Please try again.');
         }
-    }
+    };
 
     // Fetch related data for dropdowns and initial resources
     useEffect(() => {
         fetchResources(currentPage);
+    }, [currentPage, pageSize, appliedFilters]); // Added pageSize to dependencies
 
+    useEffect(() => {
         Promise.all([
             axios.get('http://localhost:8000/api/topics/'),
             axios.get('http://localhost:8000/api/keywords/'),
@@ -109,10 +110,10 @@ function ResourceList() {
                 setTargetUserGroups(targetUserGroupsRes.data || []);
             })
             .catch(error => {
-                console.error('Error fetching dropdown data:', error);
+                console.error('Error fetching dropdown data:', error.response?.data || error.message);
                 setError('Failed to fetch dropdown data. Please try again.');
             });
-    }, [currentPage, appliedFilters]);
+    }, []);
 
     // Handle filter changes (update temporary filters)
     const handleFilterChange = (e) => {
@@ -165,6 +166,13 @@ function ResourceList() {
         }
     };
 
+    // Handle page size change
+    const handlePageSizeChange = (e) => {
+        const newSize = parseInt(e.target.value, 10);
+        setPageSize(newSize);
+        setCurrentPage(1); // Reset to first page
+    };
+
     // Toggle filter visibility
     const toggleFilter = () => {
         setIsFilterOpen(prev => !prev);
@@ -191,7 +199,7 @@ function ResourceList() {
                     fetchResources(currentPage);
                 })
                 .catch(error => {
-                    console.error('Error deleting resource:', error);
+                    console.error('Error deleting resource:', error.response?.data || error.message);
                     setError('Failed to delete resource. Please try again.');
                 });
         }
@@ -524,22 +532,40 @@ function ResourceList() {
             </Row>
 
             {/* Pagination Controls */}
-            <Pagination className="justify-content-center mt-4">
-                <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1}/>
-                <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}/>
-                {[...Array(totalPages).keys()].map((page) => (
-                    <Pagination.Item
-                        key={page + 1}
-                        active={page + 1 === currentPage}
-                        onClick={() => handlePageChange(page + 1)}
+            <div className="d-flex justify-content-between align-items-center mt-4">
+                <Pagination>
+                    <Pagination.First onClick={() => handlePageChange(1)} disabled={currentPage === 1}/>
+                    <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}/>
+                    {[...Array(totalPages).keys()].map((page) => (
+                        <Pagination.Item
+                            key={page + 1}
+                            active={page + 1 === currentPage}
+                            onClick={() => handlePageChange(page + 1)}
+                        >
+                            {page + 1}
+                        </Pagination.Item>
+                    ))}
+                    <Pagination.Next onClick={() => handlePageChange(currentPage + 1)}
+                                     disabled={currentPage === totalPages}/>
+                    <Pagination.Last onClick={() => handlePageChange(totalPages)}
+                                     disabled={currentPage === totalPages}/>
+                </Pagination>
+
+                {/* Page Size Selector */}
+                <Form.Group className="d-flex align-items-center">
+                    <Form.Label className="me-2 mb-0">Resources per page:</Form.Label>
+                    <Form.Select
+                        value={pageSize}
+                        onChange={handlePageSizeChange}
+                        style={{width: 'auto'}}
                     >
-                        {page + 1}
-                    </Pagination.Item>
-                ))}
-                <Pagination.Next onClick={() => handlePageChange(currentPage + 1)}
-                                 disabled={currentPage === totalPages}/>
-                <Pagination.Last onClick={() => handlePageChange(totalPages)} disabled={currentPage === totalPages}/>
-            </Pagination>
+                        <option value={1}>1</option>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                    </Form.Select>
+                </Form.Group>
+            </div>
 
             {editingResource && (
                 <AddResourceForm

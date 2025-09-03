@@ -6,3 +6,9 @@
     transform: translateY(-5px);
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
 }
+
+.collapse.show {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}

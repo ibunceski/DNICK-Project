@@ -1,10 +1,22 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
+from rest_framework.pagination import PageNumberPagination
+
+from .filters import ResourceFilter
 from .serializers import *
 
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10  # Number of items per page
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class ResourceViewSet(viewsets.ModelViewSet):
-    queryset = Resource.objects.all()
+    queryset = Resource.objects.all().order_by('-created_at')  # Order by creation date
     serializer_class = ResourceSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ResourceFilter
+    pagination_class = StandardResultsSetPagination
 
 
 class ResourceTypeViewSet(viewsets.ModelViewSet):

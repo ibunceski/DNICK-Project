@@ -1,17 +1,17 @@
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function NavigationBar() {
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow">
-            <div className="container-fluid justify-content-center">
-                <ul className="navbar-nav">
-                    <li className="nav-item mx-3">
-                        <Link to="/" className="nav-link text-white fs-5 fw-semibold">
+        <nav className="bg-gray-800 sticky top-0 shadow">
+            <div className="container mx-auto flex justify-center p-3">
+                <ul className="flex space-x-6">
+                    <li>
+                        <Link to="/" className="text-white text-lg font-semibold hover:text-blue-400">
                             Resources
                         </Link>
                     </li>
-                    <li className="nav-item mx-3">
-                        <Link to="/add" className="nav-link text-white fs-5 fw-semibold">
+                    <li>
+                        <Link to="/add" className="text-white text-lg font-semibold hover:text-blue-400">
                             Add Resource
                         </Link>
                     </li>

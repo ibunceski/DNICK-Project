@@ -1,5 +1,4 @@
-import { Card, Button, Col } from 'react-bootstrap';
-import PDFViewer from './PDFViewer.jsx';
+import PDFViewer from "./PDFViewer.jsx";
 
 function ResourceCard({ resource, onDelete, onEdit }) {
     const getYoutubeEmbedUrl = (url) => {
@@ -8,89 +7,87 @@ function ResourceCard({ resource, onDelete, onEdit }) {
         return match ? `https://www.youtube.com/embed/${match[1]}` : null;
     };
 
-    const normalizeUrl = (url) => {
-        if (!/^https?:\/\//i.test(url)) {
-            return 'https://' + url;
-        }
-        return url;
-    };
+    const normalizeUrl = (url) =>
+        /^https?:\/\//i.test(url) ? url : "https://" + url;
 
     return (
-        <Col md={6} lg={4} className="mb-4">
-            <Card className="h-100 shadow-lg border-0 rounded-3 hover-card">
-                <Card.Header className="bg-white border-0 fw-semibold fs-5">
-                    {resource.title}
-                </Card.Header>
-                <Card.Body className="d-flex flex-column">
-                    <Card.Text className="text-muted small mb-3">
-                        {resource.description}
-                    </Card.Text>
-                    <Card.Text className="text-muted small mb-3">
-                        Created at: {new Date(resource.created_at).toLocaleDateString('en-US', {
-                        weekday: 'short',
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                    })}
-                    </Card.Text>
-                    <Card.Text className="text-muted small mb-3">
-                        Last modified at: {new Date(resource.modified_at).toLocaleDateString('en-US', {
-                        weekday: 'short',
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                    })}
-                    </Card.Text>
+        <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition flex flex-col overflow-hidden">
+            {/* Header */}
+            <div className="px-4 py-3 border-b border-slate-200 font-semibold text-slate-800">
+                {resource.title}
+            </div>
 
-                    {resource.upload_file && resource.resource_type.some((type) => type.name === 'PDF') && (
+            {/* Body */}
+            <div className="p-4 flex-1 flex flex-col text-sm text-slate-600">
+                <p className="mb-2">{resource.description}</p>
+                <p className="mb-1">
+                    <span className="font-medium">Created:</span>{" "}
+                    {new Date(resource.created_at).toLocaleDateString("en-US", {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                    })}
+                </p>
+                <p className="mb-3">
+                    <span className="font-medium">Updated:</span>{" "}
+                    {new Date(resource.modified_at).toLocaleDateString("en-US", {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                    })}
+                </p>
+
+                {resource.upload_file &&
+                    resource.resource_type.some((type) => type.name === "PDF") && (
                         <div className="mb-3">
                             <PDFViewer fileUrl={resource.upload_file} />
                         </div>
                     )}
 
-                    {resource.upload_url && (
-                        <>
-                            {getYoutubeEmbedUrl(resource.upload_url) ? (
-                                <div className="ratio ratio-16x9 mb-3 rounded">
-                                    <iframe
-                                        src={getYoutubeEmbedUrl(resource.upload_url)}
-                                        title="YouTube video"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                        className="rounded"
-                                    ></iframe>
-                                </div>
-                            ) : (
-                                <Button
-                                    variant="outline-success"
-                                    className="mb-3 fw-semibold"
-                                    href={normalizeUrl(resource.upload_url)}
-                                    target="_blank"
-                                >
-                                    🌍 Visit Link
-                                </Button>
-                            )}
-                        </>
-                    )}
-                </Card.Body>
-                <Card.Footer className="bg-white border-0">
-                    <Button
-                        variant="outline-danger"
-                        className="w-100 fw-semibold"
-                        onClick={() => onDelete(resource.id)}
-                    >
-                        Delete
-                    </Button>
-                    <Button
-                        variant="outline-primary"
-                        className="w-100 fw-semibold mb-2"
-                        onClick={onEdit}
-                    >
-                        Edit
-                    </Button>
-                </Card.Footer>
-            </Card>
-        </Col>
+                {resource.upload_url && (
+                    <>
+                        {getYoutubeEmbedUrl(resource.upload_url) ? (
+                            <div className="aspect-video mb-3 rounded overflow-hidden">
+                                <iframe
+                                    src={getYoutubeEmbedUrl(resource.upload_url)}
+                                    title="YouTube video"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="w-full h-full"
+                                ></iframe>
+                            </div>
+                        ) : (
+                            <a
+                                href={normalizeUrl(resource.upload_url)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block w-full text-center px-4 py-2 mb-3 rounded-lg border border-green-500 text-green-600 font-semibold hover:bg-green-50 transition"
+                            >
+                                🌍 Visit Link
+                            </a>
+                        )}
+                    </>
+                )}
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-slate-200 flex gap-3">
+                <button
+                    onClick={() => onEdit(resource)}
+                    className="flex-1 px-4 py-2 rounded-lg border border-indigo-500 text-indigo-600 font-semibold hover:bg-indigo-50 transition"
+                >
+                    Edit
+                </button>
+                <button
+                    onClick={() => onDelete(resource.id)}
+                    className="flex-1 px-4 py-2 rounded-lg border border-red-500 text-red-600 font-semibold hover:bg-red-50 transition"
+                >
+                    Delete
+                </button>
+            </div>
+        </div>
     );
 }
 

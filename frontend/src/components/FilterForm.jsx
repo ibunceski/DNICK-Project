@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button, Form, Row, Col, Collapse } from 'react-bootstrap';
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 function FilterForm({
                         tempFilters,
@@ -16,254 +16,216 @@ function FilterForm({
 
     const handleFilterChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setTempFilters(prev => ({
+        setTempFilters((prev) => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value,
+            [name]: type === "checkbox" ? checked : value,
         }));
     };
 
-    const handleMultiSelectChange = (name, value) => {
-        setTempFilters(prev => ({
-            ...prev,
-            [name]: value,
-        }));
+    const handleMultiSelectChange = (name, id) => {
+        const prev = tempFilters[name] || [];
+        if (prev.includes(id)) {
+            setTempFilters({ ...tempFilters, [name]: prev.filter((v) => v !== id) });
+        } else {
+            setTempFilters({ ...tempFilters, [name]: [...prev, id] });
+        }
     };
 
-    const toggleFilter = () => {
-        setIsFilterOpen(prev => !prev);
-        console.log('Filter open state:', !isFilterOpen);
+    const renderMultiSelect = (label, name, options) => {
+        const selectedNames = options
+            .filter((o) => tempFilters[name]?.includes(o.id))
+            .map((o) => o.name);
+
+        return (
+            <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
+                <div className="w-full border border-gray-300 rounded-lg px-3 py-2 cursor-pointer flex flex-wrap gap-1 min-h-[3rem]">
+                    {selectedNames.length ? (
+                        selectedNames.map((n) => (
+                            <span
+                                key={n}
+                                className="bg-indigo-100 text-indigo-800 text-sm px-2 py-1 rounded-full"
+                            >
+                {n}
+              </span>
+                        ))
+                    ) : (
+                        <span className="text-gray-400 text-sm">None selected</span>
+                    )}
+                </div>
+                <div className="mt-1 max-h-40 overflow-auto border border-gray-200 rounded-md">
+                    {options.map((o) => (
+                        <div
+                            key={o.id}
+                            className={`px-3 py-2 cursor-pointer flex justify-between items-center hover:bg-indigo-50 ${
+                                tempFilters[name]?.includes(o.id) ? "bg-indigo-100" : ""
+                            }`}
+                            onClick={() => handleMultiSelectChange(name, o.id)}
+                        >
+                            <span>{o.name}</span>
+                            {tempFilters[name]?.includes(o.id) && (
+                                <svg
+                                    className="h-4 w-4 text-indigo-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="3"
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
     };
 
     return (
-        <>
-            <Button
-                variant="primary"
-                onClick={toggleFilter}
-                aria-controls="filter-collapse"
-                aria-expanded={isFilterOpen}
-                className="mb-3"
+        <div>
+            {/* Toggle button */}
+            <button
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="mb-4 px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
             >
-                {isFilterOpen ? 'Hide Filters' : 'Show Filters'}
-            </Button>
+                {isFilterOpen ? "Hide Filters" : "Show Filters"}
+            </button>
 
-            <Collapse in={isFilterOpen}>
-                <div id="filter-collapse" className="mb-4">
-                    <Form className="p-3 rounded shadow-sm bg-light">
-                        <Row className="g-3">
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label>Title</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="title"
-                                        value={tempFilters.title}
-                                        onChange={handleFilterChange}
-                                        placeholder="Search by title"
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label>Description</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="description"
-                                        value={tempFilters.description}
-                                        onChange={handleFilterChange}
-                                        placeholder="Search by description"
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label>Language</Form.Label>
-                                    <Form.Select
-                                        name="language"
-                                        value={tempFilters.language}
-                                        onChange={handleFilterChange}
-                                    >
-                                        <option value="">All Languages</option>
-                                        <option value="en">English</option>
-                                        <option value="mk">Macedonian</option>
-                                        <option value="al">Albanian</option>
-                                    </Form.Select>
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label>Topics</Form.Label>
-                                    <Form.Select
-                                        multiple
-                                        name="topic"
-                                        value={tempFilters.topic}
-                                        onChange={(e) =>
-                                            handleMultiSelectChange(
-                                                'topic',
-                                                Array.from(e.target.selectedOptions, (option) => option.value)
-                                            )
-                                        }
-                                    >
-                                        {topics.map((t) => (
-                                            <option key={t.id} value={t.id}>{t.name}</option>
-                                        ))}
-                                    </Form.Select>
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label>Keywords</Form.Label>
-                                    <Form.Select
-                                        multiple
-                                        name="keywords"
-                                        value={tempFilters.keywords}
-                                        onChange={(e) =>
-                                            handleMultiSelectChange(
-                                                'keywords',
-                                                Array.from(e.target.selectedOptions, (option) => option.value)
-                                            )
-                                        }
-                                    >
-                                        {keywords.map((k) => (
-                                            <option key={k.id} value={k.id}>{k.name}</option>
-                                        ))}
-                                    </Form.Select>
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label>Age Groups</Form.Label>
-                                    <Form.Select
-                                        multiple
-                                        name="age_groups"
-                                        value={tempFilters.age_groups}
-                                        onChange={(e) =>
-                                            handleMultiSelectChange(
-                                                'age_groups',
-                                                Array.from(e.target.selectedOptions, (option) => option.value)
-                                            )
-                                        }
-                                    >
-                                        {ageGroups.map((a) => (
-                                            <option key={a.id} value={a.id}>{a.name}</option>
-                                        ))}
-                                    </Form.Select>
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label>Resource Types</Form.Label>
-                                    <Form.Select
-                                        multiple
-                                        name="resource_type"
-                                        value={tempFilters.resource_type}
-                                        onChange={(e) =>
-                                            handleMultiSelectChange(
-                                                'resource_type',
-                                                Array.from(e.target.selectedOptions, (option) => option.value)
-                                            )
-                                        }
-                                    >
-                                        {resourceTypes.map((rt) => (
-                                            <option key={rt.id} value={rt.id}>{rt.name}</option>
-                                        ))}
-                                    </Form.Select>
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label>Target User Groups</Form.Label>
-                                    <Form.Select
-                                        multiple
-                                        name="target_user_groups"
-                                        value={tempFilters.target_user_groups}
-                                        onChange={(e) =>
-                                            handleMultiSelectChange(
-                                                'target_user_groups',
-                                                Array.from(e.target.selectedOptions, (option) => option.value)
-                                            )
-                                        }
-                                    >
-                                        {targetUserGroups.map((tug) => (
-                                            <option key={tug.id} value={tug.id}>{tug.name}</option>
-                                        ))}
-                                    </Form.Select>
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label>Author</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        name="author"
-                                        value={tempFilters.author}
-                                        onChange={handleFilterChange}
-                                        placeholder="Search by author"
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label>Created After</Form.Label>
-                                    <Form.Control
-                                        type="date"
-                                        name="created_at_after"
-                                        value={tempFilters.created_at_after}
-                                        onChange={handleFilterChange}
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label>Created Before</Form.Label>
-                                    <Form.Control
-                                        type="date"
-                                        name="created_at_before"
-                                        value={tempFilters.created_at_before}
-                                        onChange={handleFilterChange}
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={4}>
-                                <Form.Group>
-                                    <Form.Label>Has File</Form.Label>
-                                    <Form.Check
+            {/* Animated filter panel */}
+            <AnimatePresence>
+                {isFilterOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-6 rounded-2xl shadow-md overflow-hidden"
+                    >
+                        {/* Title */}
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700">Title</label>
+                            <input
+                                type="text"
+                                name="title"
+                                value={tempFilters.title}
+                                onChange={handleFilterChange}
+                                placeholder="Search by title"
+                                className="mt-1 w-full rounded-lg border-slate-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 h-12 px-3"
+                            />
+                        </div>
+
+                        {/* Description */}
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700">Description</label>
+                            <input
+                                type="text"
+                                name="description"
+                                value={tempFilters.description}
+                                onChange={handleFilterChange}
+                                placeholder="Search by description"
+                                className="mt-1 w-full rounded-lg border-slate-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 h-12 px-3"
+                            />
+                        </div>
+
+                        {/* Language (now styled same as other dropdowns) */}
+                        {renderMultiSelect("Language", "language", [
+                            { id: "en", name: "English" },
+                            { id: "mk", name: "Macedonian" },
+                            { id: "al", name: "Albanian" },
+                        ])}
+
+                        {/* Multi-selects */}
+                        {renderMultiSelect("Topics", "topic", topics)}
+                        {renderMultiSelect("Keywords", "keywords", keywords)}
+                        {renderMultiSelect("Age Groups", "age_groups", ageGroups)}
+                        {renderMultiSelect("Resource Types", "resource_type", resourceTypes)}
+                        {renderMultiSelect("Target User Groups", "target_user_groups", targetUserGroups)}
+
+                        {/* Author */}
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700">Author</label>
+                            <input
+                                type="text"
+                                name="author"
+                                value={tempFilters.author}
+                                onChange={handleFilterChange}
+                                placeholder="Search by author"
+                                className="mt-1 w-full rounded-lg border-slate-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 h-12 px-3"
+                            />
+                        </div>
+
+                        {/* Created dates */}
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700">Created After</label>
+                            <input
+                                type="date"
+                                name="created_at_after"
+                                value={tempFilters.created_at_after}
+                                onChange={handleFilterChange}
+                                className="mt-1 w-full rounded-lg border-slate-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 h-12 px-3"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700">Created Before</label>
+                            <input
+                                type="date"
+                                name="created_at_before"
+                                value={tempFilters.created_at_before}
+                                onChange={handleFilterChange}
+                                className="mt-1 w-full rounded-lg border-slate-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 h-12 px-3"
+                            />
+                        </div>
+
+                        {/* Options checkboxes */}
+                        <div>
+                            <label className="block text-sm font-medium text-slate-700">Options</label>
+                            <div className="flex items-center gap-4 mt-1">
+                                <label className="flex items-center gap-2">
+                                    <input
                                         type="checkbox"
                                         name="has_file"
                                         checked={tempFilters.has_file}
                                         onChange={handleFilterChange}
+                                        className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
                                     />
-                                </Form.Group>
-                                <Form.Group>
-                                    <Form.Label>Has URL</Form.Label>
-                                    <Form.Check
+                                    Has File
+                                </label>
+                                <label className="flex items-center gap-2">
+                                    <input
                                         type="checkbox"
                                         name="has_url"
                                         checked={tempFilters.has_url}
                                         onChange={handleFilterChange}
+                                        className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
                                     />
-                                </Form.Group>
-                            </Col>
-                            <Col md={12}>
-                                <Button
-                                    variant="primary"
-                                    onClick={() => onApplyFilters(tempFilters)}
-                                    className="mt-3 me-2"
-                                >
-                                    Apply Filters
-                                </Button>
-                                <Button
-                                    variant="outline-secondary"
-                                    onClick={onClearFilters}
-                                    className="mt-3"
-                                >
-                                    Clear All Filters
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Form>
-                </div>
-            </Collapse>
-        </>
+                                    Has URL
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="md:col-span-3 flex justify-end gap-4 mt-4">
+                            <button
+                                onClick={() => onApplyFilters(tempFilters)}
+                                className="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
+                            >
+                                Apply Filters
+                            </button>
+                            <button
+                                onClick={onClearFilters}
+                                className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 transition"
+                            >
+                                Clear All
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
     );
 }
 

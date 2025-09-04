@@ -1,5 +1,3 @@
-import { Pagination, Form } from 'react-bootstrap';
-
 function PaginationControls({
                                 currentPage,
                                 totalPages,
@@ -8,36 +6,70 @@ function PaginationControls({
                                 onPageSizeChange,
                             }) {
     return (
-        <div className="d-flex justify-content-between align-items-center mt-4">
-            <Pagination>
-                <Pagination.First onClick={() => onPageChange(1)} disabled={currentPage === 1} />
-                <Pagination.Prev onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1} />
-                {[...Array(totalPages).keys()].map((page) => (
-                    <Pagination.Item
-                        key={page + 1}
-                        active={page + 1 === currentPage}
-                        onClick={() => onPageChange(page + 1)}
-                    >
-                        {page + 1}
-                    </Pagination.Item>
-                ))}
-                <Pagination.Next onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                <Pagination.Last onClick={() => onPageChange(totalPages)} disabled={currentPage === totalPages} />
-            </Pagination>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
+            {/* Pagination buttons */}
+            <div className="flex items-center gap-2">
+                <button
+                    onClick={() => onPageChange(1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 rounded border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:opacity-50"
+                >
+                    ⏮ First
+                </button>
+                <button
+                    onClick={() => onPageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 rounded border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:opacity-50"
+                >
+                    ◀ Prev
+                </button>
 
-            <Form.Group className="d-flex align-items-center">
-                <Form.Label className="me-2 mb-0">Resources per page:</Form.Label>
-                <Form.Select
+                {/* Page numbers */}
+                <div className="flex gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <button
+                            key={page}
+                            onClick={() => onPageChange(page)}
+                            className={`px-3 py-1 rounded ${
+                                currentPage === page
+                                    ? "bg-indigo-600 text-white"
+                                    : "border border-slate-300 text-slate-600 hover:bg-slate-100"
+                            }`}
+                        >
+                            {page}
+                        </button>
+                    ))}
+                </div>
+
+                <button
+                    onClick={() => onPageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 rounded border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:opacity-50"
+                >
+                    Next ▶
+                </button>
+                <button
+                    onClick={() => onPageChange(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 rounded border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:opacity-50"
+                >
+                    Last ⏭
+                </button>
+            </div>
+
+            {/* Page size selector */}
+            <div className="flex items-center gap-2">
+                <label className="text-sm text-slate-600">Resources per page:</label>
+                <select
                     value={pageSize}
                     onChange={(e) => onPageSizeChange(parseInt(e.target.value, 10))}
-                    style={{ width: 'auto' }}
-                    aria-label="Select resources per page"
+                    className="rounded border-slate-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 >
                     <option value={10}>10</option>
                     <option value={20}>20</option>
                     <option value={50}>50</option>
-                </Form.Select>
-            </Form.Group>
+                </select>
+            </div>
         </div>
     );
 }

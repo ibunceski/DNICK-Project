@@ -1,25 +1,30 @@
 from rest_framework import serializers
 from .models import *
 
+
 class KeywordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Keyword
         fields = ["id", "name"]  # keep ID + name
+
 
 class ResourceTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ResourceType
         fields = ["id", "name"]
 
+
 class TargetUserGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = TargetUserGroup
         fields = ["id", "name"]
 
+
 class AgeGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = AgeGroup
         fields = ["id", "name"]
+
 
 class TopicSerializer(serializers.ModelSerializer):
     class Meta:
@@ -57,18 +62,27 @@ class ResourceSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def update(self, instance, validated_data):
-        if 'upload_file' not in validated_data:
+        if 'upload_file' not in validated_data or validated_data.get('upload_file') in [None, '']:
             validated_data['upload_file'] = instance.upload_file
         return super().update(instance, validated_data)
 
     def validate(self, data):
+        request = self.context.get('request')
+        method = request.method if request else None
+
         upload_url = data.get('upload_url')
         upload_file = data.get('upload_file')
 
-        if not upload_url and not upload_file:
-            raise serializers.ValidationError("Either upload_url or upload_file must be provided.")
+        if method == 'POST':
+            if not upload_url and not upload_file:
+                raise serializers.ValidationError("Either upload_url or upload_file must be provided.")
+            if upload_url and upload_file:
+                raise serializers.ValidationError(
+                    "You cannot provide both upload_url and upload_file at the same time.")
 
-        if upload_url and upload_file:
-            raise serializers.ValidationError("You cannot provide both upload_url and upload_file at the same time.")
+        if method in ['PATCH', 'PUT']:
+            if upload_url and upload_file:
+                raise serializers.ValidationError(
+                    "You cannot provide both upload_url and upload_file at the same time.")
 
         return data

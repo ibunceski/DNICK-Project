@@ -87,7 +87,6 @@ function FilterForm({
 
     return (
         <div>
-            {/* Toggle button */}
             <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
                 className="mb-4 px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
@@ -95,7 +94,6 @@ function FilterForm({
                 {isFilterOpen ? "Hide Filters" : "Show Filters"}
             </button>
 
-            {/* Animated filter panel */}
             <AnimatePresence>
                 {isFilterOpen && (
                     <motion.div
@@ -105,7 +103,6 @@ function FilterForm({
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-slate-50 p-6 rounded-2xl shadow-md overflow-hidden"
                     >
-                        {/* Title */}
                         <div>
                             <label className="block text-sm font-medium text-slate-700">Title</label>
                             <input
@@ -118,7 +115,6 @@ function FilterForm({
                             />
                         </div>
 
-                        {/* Description */}
                         <div>
                             <label className="block text-sm font-medium text-slate-700">Description</label>
                             <input
@@ -131,21 +127,18 @@ function FilterForm({
                             />
                         </div>
 
-                        {/* Language (now styled same as other dropdowns) */}
                         {renderMultiSelect("Language", "language", [
                             { id: "en", name: "English" },
                             { id: "mk", name: "Macedonian" },
                             { id: "al", name: "Albanian" },
                         ])}
 
-                        {/* Multi-selects */}
                         {renderMultiSelect("Topics", "topic", topics)}
                         {renderMultiSelect("Keywords", "keywords", keywords)}
                         {renderMultiSelect("Age Groups", "age_groups", ageGroups)}
                         {renderMultiSelect("Resource Types", "resource_type", resourceTypes)}
                         {renderMultiSelect("Target User Groups", "target_user_groups", targetUserGroups)}
 
-                        {/* Author */}
                         <div>
                             <label className="block text-sm font-medium text-slate-700">Author</label>
                             <input
@@ -158,7 +151,6 @@ function FilterForm({
                             />
                         </div>
 
-                        {/* Created dates */}
                         <div>
                             <label className="block text-sm font-medium text-slate-700">Created After</label>
                             <input
@@ -180,7 +172,6 @@ function FilterForm({
                             />
                         </div>
 
-                        {/* Options checkboxes */}
                         <div>
                             <label className="block text-sm font-medium text-slate-700">Options</label>
                             <div className="flex items-center gap-4 mt-1">
@@ -207,7 +198,6 @@ function FilterForm({
                             </div>
                         </div>
 
-                        {/* Actions */}
                         <div className="md:col-span-3 flex justify-end gap-4 mt-4">
                             <button
                                 onClick={() => onApplyFilters(tempFilters)}
@@ -217,7 +207,7 @@ function FilterForm({
                             </button>
                             <button
                                 onClick={onClearFilters}
-                                className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 transition"
+                                className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 active:bg-slate-300 transition"
                             >
                                 Clear All
                             </button>

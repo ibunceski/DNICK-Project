@@ -1,12 +1,12 @@
-import { useState, useRef } from 'react';
+import {useState, useRef} from 'react';
 import BasicInfo from './BasicInfo.jsx';
 import FileUpload from './FileUpload.jsx';
 import Categorization from './Categorization.jsx';
 import SubmissionModal from './SubmissionModal.jsx';
-import { useResourceForm } from './useResourceForm.js';
+import {useResourceForm} from './useResourceForm.js';
 
-function AddResourceForm({ resource, onUpdated, onClose }) {
-    const [alert, setAlert] = useState({ show: false, message: '', type: '' });
+function AddResourceForm({resource, onUpdated, onClose}) {
+    const [alert, setAlert] = useState({show: false, message: '', type: ''});
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const fileInputRef = useRef(null);
@@ -44,18 +44,13 @@ function AddResourceForm({ resource, onUpdated, onClose }) {
     const handleAddAnother = () => {
         resetForm(fileInputRef);
         setIsModalOpen(false);
-        setAlert({ show: false, message: '', type: '' });
+        setAlert({show: false, message: '', type: ''});
     };
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
-        setAlert({ show: false, message: '', type: '' });
+        setAlert({show: false, message: '', type: ''});
     };
-
-    // const handleSuccessClose = () => {
-    //     setIsModalOpen(false);
-    //     setAlert({ show: false, message: '', type: '' });
-    // };
 
     return (
         <div className="max-w-4xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-xl">

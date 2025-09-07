@@ -65,7 +65,7 @@ function ResourceList() {
 
     useEffect(() => {
         if (editingResource && editFormRef.current) {
-            editFormRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+            editFormRef.current.scrollIntoView({behavior: "smooth", block: "start"});
         }
     }, [editingResource]);
 
@@ -142,14 +142,12 @@ function ResourceList() {
         <div className="max-w-7xl mx-auto px-6 py-8">
             <h2 className="text-2xl font-bold text-slate-800 mb-6">📚 Resources</h2>
 
-            {/* Error */}
             {error && (
                 <div className="mb-4 rounded-lg bg-red-100 p-4 text-red-700 shadow-sm">
                     {error}
                 </div>
             )}
 
-            {/* Filters */}
             <div className="mb-8 bg-white p-6 rounded-2xl shadow-md border border-slate-200">
                 <FilterForm
                     tempFilters={tempFilters}
@@ -165,7 +163,6 @@ function ResourceList() {
                 />
             </div>
 
-            {/* Resource Grid */}
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {filteredResources.length > 0 ? (
                     filteredResources.map((resource) => (
@@ -183,7 +180,6 @@ function ResourceList() {
                 )}
             </div>
 
-            {/* Pagination */}
             <div className="mt-10 flex justify-center">
                 <PaginationControls
                     currentPage={currentPage}
@@ -194,19 +190,16 @@ function ResourceList() {
                 />
             </div>
 
-            {/* Edit Resource Form */}
             {editingResource && (
                 <div ref={editFormRef}>
-                <AddResourceForm
-                    resource={editingResource}
-                    onClose={() => setEditingResource(null)}
-                    onUpdated={() => {
-                        fetchResources(currentPage);
-                        setEditingResource(null);
-                    }}
-                />
+                    <AddResourceForm
+                        resource={editingResource}
+                        onClose={() => setEditingResource(null)}
+                        onUpdated={() => fetchResources(currentPage)}
+                    />
                 </div>
             )}
+
         </div>
     );
 }

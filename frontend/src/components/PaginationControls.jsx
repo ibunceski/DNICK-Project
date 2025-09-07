@@ -7,7 +7,6 @@ function PaginationControls({
                             }) {
     return (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
-            {/* Pagination buttons */}
             <div className="flex items-center gap-2">
                 <button
                     onClick={() => onPageChange(1)}
@@ -24,7 +23,6 @@ function PaginationControls({
                     ◀ Prev
                 </button>
 
-                {/* Page numbers */}
                 <div className="flex gap-1">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                         <button
@@ -57,7 +55,6 @@ function PaginationControls({
                 </button>
             </div>
 
-            {/* Page size selector */}
             <div className="flex items-center gap-2">
                 <label className="text-sm text-slate-600">Resources per page:</label>
                 <select
@@ -65,9 +62,9 @@ function PaginationControls({
                     onChange={(e) => onPageSizeChange(parseInt(e.target.value, 10))}
                     className="rounded border-slate-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                 >
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                    <option value={50}>50</option>
+                    <option value={12}>12</option>
+                    <option value={24}>24</option>
+                    <option value={48}>48</option>
                 </select>
             </div>
         </div>

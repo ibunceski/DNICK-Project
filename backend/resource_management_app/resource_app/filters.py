@@ -40,15 +40,19 @@ class ResourceFilter(filters.FilterSet):
     has_file = filters.BooleanFilter(method='filter_has_file')
     has_url = filters.BooleanFilter(method='filter_has_url')
 
+    from django.db.models import Q
+
     def filter_has_file(self, queryset, name, value):
         if value:
-            return queryset.filter(upload_file__isnull=False)
-        return queryset.filter(upload_file__isnull=True)
+            return queryset.filter(~Q(upload_file=""), upload_file__isnull=False)
+        else:
+            return queryset.filter(Q(upload_file="") | Q(upload_file__isnull=True))
 
     def filter_has_url(self, queryset, name, value):
         if value:
-            return queryset.filter(upload_url__isnull=False)
-        return queryset.filter(upload_url__isnull=True)
+            return queryset.filter(~Q(upload_url=""), upload_url__isnull=False)
+        else:
+            return queryset.filter(Q(upload_url="") | Q(upload_url__isnull=True))
 
     class Meta:
         model = Resource

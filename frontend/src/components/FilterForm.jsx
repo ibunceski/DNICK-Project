@@ -211,7 +211,7 @@ function FilterForm({
                         <div className="md:col-span-3 flex justify-end gap-4 mt-4">
                             <button
                                 onClick={() => onApplyFilters(tempFilters)}
-                                className="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition"
+                                className="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 active:bg-indigo-800 transition"
                             >
                                 Apply Filters
                             </button>

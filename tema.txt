@@ -1,3 +1,0 @@
-aplikacija kako pomosno za rabota so model za cybersecurity, jas go imam delot za rakovodenje so koristeni resursi.
-obicno prikazvenje na koristeni resursi so moznost za filtiranje dali po keywords ili nekoja kategorija.
-da se naprajt forma za dodavanje na novi resursi. backend django frontend react

@@ -42,19 +42,19 @@ class ResourceSerializer(serializers.ModelSerializer):
 
     # Writable fields (so you can still POST/PUT IDs)
     keyword_ids = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Keyword.objects.all(), source="keywords", write_only=True
+        many=True, queryset=Keyword.objects.all(), source="keywords", write_only=True, required=False
     )
     resource_type_ids = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=ResourceType.objects.all(), source="resource_type", write_only=True
+        many=True, queryset=ResourceType.objects.all(), source="resource_type", write_only=True, required=False
     )
     target_user_group_ids = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=TargetUserGroup.objects.all(), source="target_user_groups", write_only=True
+        many=True, queryset=TargetUserGroup.objects.all(), source="target_user_groups", write_only=True, required=False
     )
     age_group_ids = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=AgeGroup.objects.all(), source="age_groups", write_only=True
+        many=True, queryset=AgeGroup.objects.all(), source="age_groups", write_only=True, required=False
     )
     topic_ids = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Topic.objects.all(), source="topic", write_only=True
+        many=True, queryset=Topic.objects.all(), source="topic", write_only=True, required=False
     )
 
     class Meta:

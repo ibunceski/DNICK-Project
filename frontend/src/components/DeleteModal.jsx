@@ -20,6 +20,7 @@ function DeleteConfirmationModal({ isOpen, onClose, onConfirm }) {
                         Cancel
                     </button>
                     <button
+                        name='confirmdelete'
                         onClick={onConfirm}
                         className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
                     >

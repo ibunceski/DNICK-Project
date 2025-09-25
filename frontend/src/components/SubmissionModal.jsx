@@ -64,12 +64,14 @@ function SubmissionModal({ isOpen, onClose, alert, onAddAnother, onSuccessClose,
                             ) : (
                                 <>
                                     <button
+                                        name='addanother'
                                         onClick={onAddAnother}
                                         className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                                     >
                                         Add Another Resource
                                     </button>
                                     <button
+                                        name='done'
                                         onClick={() => navigate('/')}
                                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                                     >

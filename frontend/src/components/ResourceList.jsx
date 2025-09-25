@@ -16,6 +16,8 @@ function ResourceList() {
     const [deleteTarget, setDeleteTarget] = useState(null); // For delete modal
     const [error, setError] = useState(null);
     const [editingResource, setEditingResource] = useState(null);
+    const [successMessage, setSuccessMessage] = useState("");
+
     const editFormRef = useRef(null);
     const [tempFilters, setTempFilters] = useState({
         title: "", description: "", language: "",
@@ -99,16 +101,18 @@ function ResourceList() {
         setCurrentPage(1);
     };
 
-    // Open delete modal
+
     const handleDelete = (id) => setDeleteTarget(id);
 
-    // Confirm delete
+
     const confirmDelete = () => {
         if (!deleteTarget) return;
         axios.delete(`http://localhost:8000/api/resources/${deleteTarget}/`)
             .then(() => {
                 fetchResources(currentPage);
                 setDeleteTarget(null);
+                setSuccessMessage("✅ Resource deleted");
+                setTimeout(() => setSuccessMessage(""), 3000); // hide after 3s
             })
             .catch(() => {
                 setError("Failed to delete resource. Please try again.");
@@ -116,9 +120,16 @@ function ResourceList() {
             });
     };
 
+
     return (
         <div className="max-w-7xl mx-auto px-6 py-8">
             <h2 className="text-2xl font-bold text-slate-800 mb-6">📚 Resources</h2>
+            {successMessage && (
+                <div className="fixed top-5 left-1/2 -translate-x-1/2 bg-green-100 text-green-800 px-6 py-3 rounded-xl shadow-lg animate-fade-in">
+
+                    {successMessage}
+                </div>
+            )}
 
             {error && (
                 <div className="mb-4 rounded-lg bg-red-100 p-4 text-red-700 shadow-sm">{error}</div>

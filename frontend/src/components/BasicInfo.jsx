@@ -5,6 +5,7 @@ function BasicInfo({ title, description, author, language, setTitle, setDescript
                 <div>
                     <label className="block mb-1 font-medium">Title</label>
                     <input
+                        name="title"
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
@@ -15,6 +16,7 @@ function BasicInfo({ title, description, author, language, setTitle, setDescript
                 <div>
                     <label className="block mb-1 font-medium">Author</label>
                     <input
+                        name="author"
                         type="text"
                         value={author}
                         onChange={(e) => setAuthor(e.target.value)}
@@ -25,6 +27,7 @@ function BasicInfo({ title, description, author, language, setTitle, setDescript
             <div>
                 <label className="block mb-1 font-medium">Description</label>
                 <textarea
+                    name="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
@@ -34,6 +37,7 @@ function BasicInfo({ title, description, author, language, setTitle, setDescript
             <div>
                 <label className="block mb-1 font-medium">Language</label>
                 <select
+                    name="language"
                     value={language}
                     onChange={(e) => setLanguage(e.target.value)}
                     className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400"

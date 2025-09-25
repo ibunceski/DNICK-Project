@@ -71,6 +71,7 @@ function FileUpload({ resource, uploadFile, uploadUrl, setUploadFile, setUploadU
                 >
                     <input
                         type="file"
+                        name='upload_file'
                         ref={fileInputRef}
                         onChange={(e) => handleFileSelect(e.target.files[0])}
                         className="hidden"
@@ -123,6 +124,7 @@ function FileUpload({ resource, uploadFile, uploadUrl, setUploadFile, setUploadU
                 <input
                     type="url"
                     value={uploadUrl}
+                    name='upload_url'
                     onChange={(e) => setUploadUrl(e.target.value)}
                     className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-400"
                     placeholder="https://example.com/document.pdf"

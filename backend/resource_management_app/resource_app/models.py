@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 
+
 class Keyword(models.Model):
     name = models.TextField(unique=True)
 
@@ -61,3 +62,5 @@ class Resource(models.Model):
     def clean(self):
         if not self.upload_file and not self.upload_url:
             raise ValidationError("Either upload a file or provide a URL to continue.")
+        if self.upload_file and self.upload_url:
+            raise ValidationError("You cannot provide both a file and an URL.")

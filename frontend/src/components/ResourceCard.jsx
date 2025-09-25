@@ -11,7 +11,7 @@ function ResourceCard({ resource, onDelete, onEdit }) {
         /^https?:\/\//i.test(url) ? url : "https://" + url;
 
     return (
-        <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition flex flex-col overflow-hidden">
+        <div className="karta bg-white rounded-xl shadow-md hover:shadow-lg transition flex flex-col overflow-hidden">
             {/* Header */}
             <div className="px-4 py-3 border-b border-slate-200 font-semibold text-slate-800">
                 {resource.title}

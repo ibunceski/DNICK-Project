@@ -108,3 +108,26 @@ def test_resource_serializer_output_includes_relations():
     assert data["description"] == "Testing serializer"
     assert data["upload_url"] == "https://example.com"
     assert data["keywords"][0]["name"] == "security"
+
+@pytest.mark.django_db
+def test_serializer_rejects_invalid_ids():
+    data = {
+        "title": "Bad IDs",
+        "language": "en",
+        "upload_url": "https://bad.com",
+        "keyword_ids": [999],  # non-existent
+    }
+
+    serializer = ResourceSerializer(data=data, context={"request": type('Request', (), {'method': 'POST'})()})
+    assert not serializer.is_valid()
+    assert "Invalid pk" in str(serializer.errors)
+
+@pytest.mark.django_db
+def test_serializer_cannot_override_readonly_fields():
+    resource = Resource.objects.create(title="Test", language="en", upload_url="https://t.com")
+    data = {"created_at": "2025-01-01T00:00:00Z"}
+
+    serializer = ResourceSerializer(resource, data=data, partial=True, context={"request": type('Request', (), {'method': 'PATCH'})()})
+    assert serializer.is_valid()
+    updated = serializer.save()
+    assert updated.created_at != "2025-01-01T00:00:00Z"

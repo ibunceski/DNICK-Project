@@ -1,4 +1,5 @@
 import pytest
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from resource_app.models import Resource
 
@@ -41,3 +42,10 @@ def test_resource_clean_accepts_file_or_url(tmp_path):
                          upload_file=test_file)
     with pytest.raises(ValidationError):
         resource3.clean() # Should raise - url and file added
+
+@pytest.mark.django_db
+def test_resource_many_to_many_empty():
+    user = User.objects.create_user(username="tester", password="pass123")
+    resource = Resource.objects.create(title="Empty M2M", language="en", upload_url="https://e.com", user=user)
+    assert resource.keywords.count() == 0
+    assert resource.resource_type.count() == 0
